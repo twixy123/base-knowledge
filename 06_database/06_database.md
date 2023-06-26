@@ -299,7 +299,7 @@
 
 Тут мы получим таблицу со всеми учителями у которых есть уроки и так же названия этих уроков
 
-#### **Получение выборки записей из 2ух с получением всех записей первой таблицы и соответствующих записей из второй таблицы**
+#### **Получение выборки записей из 2ух таблиц с получением всех записей первой таблицы и соответствующих записей из второй таблицы**
 
 Команда:
 
@@ -496,65 +496,98 @@
 
 `select * from customer;`
 
-#### ****
+#### **Получение всех соответствующих записей из 2ух таблиц по условию**
 
 Команда:
 
-``
+`select first_table.*, second_table.* from first_table inner join second_table on second_table.link_key = first_table.link_key;`
+
+Тут мы получим только те записи, которые соответствуют условию.
 
 Пример:
 
-``
+`select product_photo.*, product.name from product_photo inner join product on product.id = product_photo.product_id;`
 
-#### ****
+#### **Получение записей из 2ух таблиц по средством сопоставления привязанных ключей**
 
 Команда:
 
-``
+`select first_table.*, second_table.* from first_table left join second_table on second_table.link_key = first_table.link_key;`
+
+ИЛИ
+
+`select first_table.*, second_table.* from first_table right join second_table on second_table.link_key = first_table.link_key;`
+
+Тут мы получим каждую запись из *first_table*, если указан ***left join***, или все записи из *second_table*, если указан ***right join*** со всеми колонками и все колонки из записей *second_table/first_table (в зависимости от указанного **join**)*, которые совпадуд по условию.
+В колонки из *second_table/first_table (в зависимости от указанного **join**)* талицы будут проставлены пустые значения, если по условию не будет найдена запись из *second_table/first_table (в зависимости от указанного **join**)* таблицы.
+
+> Условие - то что мы пишем после ключевого слова ***on***
+
+*Так же мы можем вместо звездочки написать только нужные нам колонки.*
+
+*Еще если мы хотим получить просто все колонки, можно не указывать названия таблиц после коючевого слова **select**, а просто написать "`*`"*
 
 Пример:
 
-``
+`select product_photo.*, product.name from product_photo left join product on product.id = product_photo.product_id;`
 
-#### ****
+#### **Получение выборки из 2 таблиц по средством сопоставления привязанных ключей с применением алиасов**
 
 Команда:
 
-``
+`select ft.*, st.key_name from first_table ft left join second_table st on st.link_key = ft.link_key;`
 
 Пример:
 
-``
+`select pp.*, p.name from product_photo pp left join product p on p.id = pp.product_id;`
 
-#### ****
+> Несмотря на то что мы объявили **alias** только после указания таблицы, после ключевого слова ***from*** и ***join***, мы все равно можем использовать **alias** и до этого момента.
+
+* Пример пустых значений в колонках из второй таблицы при использовании ***left join***
+
+  ![Пример пустых значений в колонках из второй таблицы при использовании left join](./10_empty-values-left-join.png)
+* Пример пустых значений в колонках из первой таблицы при использовании ***right join***
+
+  ![Пример пустых значений в колонках из первой таблицы при использовании right join](./11_empty-values-right-join.png)
+
+#### **Удалить foreign_key из таблицы**
+
+> Лучше этого конечно никогда не делать `:)`
 
 Команда:
 
-``
+`alter table table_name drop constraint key_name;`
+
+Что бы узнать какая колонка у нас сейчас зависима от другой таблицы, можно использовать команду:
+
+`\d table_name;`
+
+В рузельтате будет вывод таблицы и отдельным блоком ключи которые зависимы от других таблиц.
+Блок называется ***Foreign-key constraints:***
 
 Пример:
 
-``
+`alter table product_photo drop constraint product_photo_product_id_fkey;`
 
-#### ****
+#### **Удалить запись**
 
 Команда:
 
-``
+`delete from table_name where key_name = "desired_value";`
 
 Пример:
 
-``
+`delete from product_photo where id = 2;`
 
-#### ****
+#### **Обновить запись**
 
 Команда:
 
-``
+`update table_name set key_name = 'desired_value', key_name='desired_value' where key_name = 'desired_value';`
 
 Пример:
 
-``
+`update product_photo set url = 'some-url.com' where id = 1;`
 
 #### ****
 
@@ -636,7 +669,7 @@
     - новый коннект - `psql -h localhost -U ruslan -d shop`
 
 
-#### Создание таблиц
+#### **Создание таблиц**
 
 * `create table customer(id serial primary key, name varchar(255), phone varchar(30), email varchar(255));`
 * `create table product(id serial primary key, name varchar(255), description text, price integer);`
@@ -644,7 +677,7 @@
 * `create table cart(id serial primary key, customer_id integer references customer(id));`
 * `create table cart_product(cart_id integer references cart(id), product_id integer references product(id));`
 
-#### Посмотреть все таблицы
+#### **Посмотреть все таблицы**
 
 `\d`
 
@@ -654,7 +687,7 @@
 
 ![table sequence](./03_table-sequence.png)
 
-#### посмотреть каждую таблицу по отдельности
+#### **посмотреть каждую таблицу по отдельности**
 
 * `\d customer`
 * `\d product`
@@ -664,7 +697,7 @@
 
 ![каждая таблица по отдельности](./02_each-tables.png)
 
-#### Добавить записей в таблицы
+#### **Добавить записи в таблицы**
 
 * Customer
   
@@ -688,3 +721,42 @@
   `select * from product;`
   
   ![Посмотреть записи из таблицы product](./05_select-product.png)
+* Product Photo
+  
+  Создать записи
+  
+  `insert into product_photo (url, product_id) values ('iphone_photo', 1);`
+
+  Пока не вставляем запись для *iPad*
+  
+  Посмотреть записи
+
+  `select * from product_photo;`
+  
+  ![Посмотреть записи из таблицы product_photo](./06_select-product-photo.png)
+
+
+#### **Посмотреть выборку двух таблиц**
+
+* Код - все записи со всеми колонками из первой таблицы и все колонки из совпадающих записей из второй таблицы
+
+  `select * from product_photo left join product on product.id = product_photo.product_id;`
+
+  Результат
+
+  ![все записи со всеми колонками из первой таблицы и все колонки из совпадающих записей второй таблицы](./07_select-all-columns-left-join.png)
+* Код - все записи со всеми колонками из первой таблицы и выбранные колонки из совпадающих записей второй таблицы
+
+  `select product_photo.*, product.name from product_photo left join product on product.id = product_photo.product_id;`
+
+  Результат
+
+  ![все записи со всеми колонками из первой таблицы и выбранные колонки из совпадающих записей второй таблицы](./08_select-all-first-desired-second-left-join.png)
+* Код - все записи со всеми колонками из первой таблицы и выбранные колонки из совпадающих записей второй таблицы совместно с алиасами
+
+  `select pp.*, p.name from product_photo pp left join product p on p.id = pp.product_id;`
+
+  Результат
+
+  ![все записи со всеми колонками из первой таблицы и выбранные колонки из совпадающих записей второй таблицы совместно с алиасами](./09_select-all-first-desired-second-left-join-alias.png)
+
