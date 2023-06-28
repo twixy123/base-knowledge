@@ -589,65 +589,48 @@
 
 `update product_photo set url = 'some-url.com' where id = 1;`
 
-#### ****
+#### **отличие where от having**
+
+having так же как и where производит филтрацию по записям. Разница в том что having производит филтрацию по группам, а where по конкретным строкам
+
+#### **Сортировка в postgress плохо работает с буквенными значениям в не utf-8 кодировке, есть способ исправить это**
 
 Команда:
 
-``
+`select * from table_name order by key_name;`
+
+Запись может плохо отработать если будет не латинский алфавит, что бы такое решить можно использовать следующую конструкцию
+
+`select * from table_name order by key_name using ~<~;`
 
 Пример:
 
-``
+`select * from customer order by name using ~<~;`
 
-#### ****
+#### **ограничить получение записей из таблицы**
 
 Команда:
 
-``
+`select * from table_name limit 1;`
 
 Пример:
 
-``
+`select * from customer limit 1;`
 
-#### ****
+#### **Пропустить какое-то количество записей при выборке из таблицы**
 
 Команда:
 
-``
+`select * from table_name offset 1;`
 
 Пример:
 
-``
+`select * from customer offset 1;`
 
-#### ****
 
-Команда:
-
-``
-
-Пример:
-
-``
-
-#### ****
-
-Команда:
-
-``
-
-Пример:
-
-``
-
-#### ****
-
-Команда:
-
-``
-
-Пример:
-
-``
+---
+---
+---
 
 ## Пример архитектуры баз данных для магазина
 
@@ -734,6 +717,28 @@
   `select * from product_photo;`
   
   ![Посмотреть записи из таблицы product_photo](./06_select-product-photo.png)
+* Cart
+
+  Создать записи
+
+  `insert into cart (customer_id) values (1);`
+
+  Посмотреть записи
+
+  `select * from cart;`
+
+  ![Посмотреть записи из таблицы cart](./12_select-cart.png)
+* Cart product
+
+  Создать записи
+
+  `insert into cart_product (cart_id, product_id) values (1, 1), (1, 2);`
+
+  Посмотреть все записи
+
+  `select * from cart_product;`
+
+  ![Посмотреть все записи в таблице cart_product](./13_select-cart-product.png)
 
 
 #### **Посмотреть выборку двух таблиц**
@@ -759,4 +764,71 @@
   Результат
 
   ![все записи со всеми колонками из первой таблицы и выбранные колонки из совпадающих записей второй таблицы совместно с алиасами](./09_select-all-first-desired-second-left-join-alias.png)
+
+
+#### **Получить имена клиентов с общей суммой их заказов**
+
+* Посмотреть [структуру](#посмотреть-каждую-таблицу-по-отдельности) таблицы и записи в таблице ***customer***
+  
+  `\d customer;`
+
+  `select * from customer;`
+
+  ![данные из таблицы customer](./14_combat-tasks-show-customer.png)
+* Посмотреть [структуру](#посмотреть-каждую-таблицу-по-отдельности) таблицы и записи в таблице ***cart***
+  
+  `\d cart;`
+
+  `select * from cart;`
+
+  ![данные из таблицы cart](./15_combat-tasks-show-cart.png)
+* Посмотреть [структуру](#посмотреть-каждую-таблицу-по-отдельности) таблицы и записи в таблице ***cart_product***
+  
+  `\d cart_product;`
+
+  `select * from cart_product;`
+
+  ![данные из таблицы cart_product](./16_combat-tasks-show-cart-product.png)
+* Посмотреть [структуру](#посмотреть-каждую-таблицу-по-отдельности) таблицы и записи в таблице ***product***
+  
+  `\d product;`
+
+  `select * from product;`
+
+  ![данные из таблицы product](./17_combat-tasks-show-product.png)
+* Получить таблицу из имен из таблицы ***customer*** и id привзяанной к пользователю записи из таблицы ***cart***
+
+  `select c.name, cart.id as cart_id from customer c left join cart on cart.customer_id=c.id;`
+
+  ![left join таблицы customer с таблицей cart](./18_customer-cart-left-join.png)
+* Получить таблицу из имен из таблицы ***customer***, ***id*** привзяанной к пользователю записи из табилцы ***cart*** и ***id*** продукта в привзяанной к ***cart.id*** записи из таблицы ***cart_product***
+
+  `select c.name, cart.id as cart_id, cp.product_id from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id = cart.id;`
+
+  ![left join таблиц customer, cart и cart_product](./19_customer-cart-cart_product-left-join.png)
+* Получить таблицу из ***name*** из таблицы ***customer***, ***id*** привзяанной к пользователю записи из табилцы ***cart***, ***id*** продукта в привзяанной к ***cart.id*** записи из таблицы ***cart_product*** и цену продукта по ***cart_product.product_id*** из привзяанной записи из таблицы ***product***
+
+  `select c.name, cart.id as cart_id, cp.product_id, p.price from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id = cart.id left join product p on cp.product_id = p.id;`
+
+  ![left join таблиц customer, cart, cart_product и product](./20_customer-cart-cart_product-product-left-join.png)
+* Получить таблицу из ***name*** из таблицы ***customer*** и суммированный ***price*** из привязанных записей из таблицы ***product***
+
+  `select c.name, sum(p.price) from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id = cart.id left join product p on cp.product_id = p.id group by c.id;`
+
+  ![left join from customer to product and grouped by customer id](./21_grouped-customers-sum-price-product.png)
+* Получить таблицу из ***name*** из таблицы ***customer*** и суммированный ***price*** из привязанных записей из таблицы ***product*** или дефолтное значение
+
+  `select c.name, coalesce(sum(p.price), 0) as order_sum from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id = cart.id left join product p on cp.product_id = p.id group by c.id;`
+
+  ![customer with order price](./22_grouped-customer-sum-order-price-default-value.png)
+* Получить отсортированную таблицу из ***name*** из таблицы ***customer*** и суммированный ***price*** из привязанных записей из таблицы ***product*** или дефолтное значение
+
+  `select c.name, coalesce(sum(p.price), 0) as order_sum from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id = cart.id left join product p on cp.product_id = p.id group by c.id order by order_sum desc;`
+
+  ![sorted customers by price with order price](./23_sorted-grouped-customers-order-price.png)
+* Получить отсортированную таблицу из ***name*** из таблицы ***customer*** и суммированный ***price*** из привязанных записей из таблицы ***product*** или дефолтное значение
+
+  `select c.name, coalesce(sum(p.price), 0) as order_sum from customer c left join cart on cart.customer_id=c.id left join cart_product cp on cp.cart_id = cart.id left join product p on cp.product_id = p.id group by c.id having sum(p.price)>0 order by order_sum desc;`
+
+  ![sorted and filtered customers by price with order price](./24_sorted-filtered-customers-with-order-price.png)
 
