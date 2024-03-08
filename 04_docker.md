@@ -164,6 +164,32 @@ COPY yarn.lock .
 
 `netstat -r`
 
+## Поднять пустой Ubuntu
+
+**Dockerfile**
+```
+FROM ubuntu:latest
+CMD tail -f /dev/null
+```
+
+---
+
+**Сборка образа**
+`docker build -t ubuntu-container .`
+
+---
+
+**Запуск контейнера**
+
+`docker run -d --name my-ubuntu-container ubuntu-container tail -f /dev/null`
+
+*Команда tail -f /dev/null позволяет контейнеру продолжать работать, не выполняя никаких операций.*
+
+---
+
+**Взаимодействие с контейнером**
+`docker exec -it my-ubuntu-container bash`
+
 
 
 

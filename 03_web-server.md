@@ -108,9 +108,17 @@ HTTP - протокол передачи гипертекста. Страниц�
 
 `grep -w needed_port /etc/services`
 
+ИЛИ для macos
+
+`sudo lsof -iTCP:needed_port -iUDP:needed_port -n -P`
+
 Пример:
 
 `grep -w 5050 /etc/services`
+
+ИЛИ для macos
+
+`sudo lsof -iTCP:5050 -iUDP:5050 -n -P`
 
 Если ничего не вышло, значит порт свободен.
 

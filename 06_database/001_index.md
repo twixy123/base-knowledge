@@ -469,6 +469,28 @@
 
 `create table customer(id serial primary key, name varchar(255), phone varchar(30), email varchar(255));`
 
+
+#### **Создать таблицу psql используя uuid**
+
+Для начала нужно установить расширение в таблицу uuid
+
+`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
+
+Далее создавая таблицу, можно использовать не **serial** тип а **uuid** тип
+
+Код:
+
+`create table table_name(key_id_name uuid default uuid_generate_v1() primary key, key_name varchar(255));`
+
+ИЛИ
+
+`create table table_name(key_id_name uuid default uuid_generate_v1(), key_name varchar(255),  primary key (key_id_name));`
+
+Пример:
+
+`create table customer(uuid uuid default uuid_generate_v1() primary key, name varchar(255), phone varchar(30), email varchar(255));`
+
+
 #### **Создать запись в таблицу**
 
 Команда:
@@ -488,6 +510,26 @@
 Пример:
 
 `insert into customer(name, email, phone) values ('Василий', 'vac@gmail.com', '02'), ('Петр', 'petr@gmail.com', '03');`
+
+#### **Добавить колонку в таблицу**
+
+Команда:
+
+`ALTER TABLE table_name ADD COLUMN key_name desired_type;`
+
+Пример:
+
+`ALTER TABLE customer ADD COLUMN age INTEGER;`
+
+#### **Удалить колонку в таблице**
+
+Команда:
+
+`ALTER TABLE table_name DROP COLUMN key_name;`
+
+Пример:
+
+`ALTER TABLE customer DROP COLUMN age;`
 
 #### **посмотреть записи в таблице**
 
