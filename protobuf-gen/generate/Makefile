@@ -1,10 +1,12 @@
 proto-gen:
+	make delete-proto-payload
 	docker build -t proto-generate-image .
 	docker run -d -v ./grpc:/protobuf-gen/grpc --name proto-generate-container proto-generate-image
 
 delete-proto-payload:
-	docker rm proto-generate-container --force
-	docker rmi proto-generate-image --force
+	-docker stop proto-generate-container
+	-docker rm proto-generate-container --force
+	-docker rmi proto-generate-image --force
 
 gen-proto-with-remove:
 	make proto-gen

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+service YourServiceName {
+  rpc GetUuid(google.protobuf.Empty) returns (UUID);
+}
+
+message UUID {
+  string value = 1;
+}
