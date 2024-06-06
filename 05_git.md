@@ -40,7 +40,13 @@
 
 `git clone git@github.com:twixy123/base-knowledge.git`
 
-#### Клонирование репозитория с ключом из не дефолтной папки
+#### Клонирование репозитория с ключом из ***НЕ*** дефолтной папки
+
+---
+
+##### Способ 1
+
+---
 
 Если вы вставили в аккаунт git хостинга не дефолтный ключ, а например ключ который лежит в папке ***~/.ssh/decided_service_name/any_file_name_rsa***. Нужно создать файл config в .ssh, без каких либо расширений и в него добавить строки:
 
@@ -66,4 +72,46 @@ Host github.custom-host.com
 `github.custom-host.com ecdsa-sha2-nistp256 ...`
 
 > ... - какой-то алгоритм шифровки, который я не понимаю от куда берется
+
+---
+
+##### Способ 2
+
+---
+
+В основной файл `.gitconfig` для определенных репозиториев можно указывать отдельные данные для конфигурации.
+
+> Так же в эти данные можно указать и ключ ssh
+
+В конце вашего файла .gitconfig вы можете поместить что-то вроде этого:
+
+```
+[includeIf "gitdir:~/company_a/"]
+  path = .gitconfig-company_a
+[includeIf "gitdir:~/company_b/"]
+  path = .gitconfig-company_b
+```
+
+**.gitconfig-company_a**
+
+```
+[user]
+name = John Smith
+email = john.smith@companya.net
+
+[core]
+sshCommand = ssh -i ~/.ssh/id_rsa_companya
+```
+
+**.gitconfig-company_b**
+
+```
+[user]
+name = John Smith
+email = js@companyb.com
+
+[core]
+sshCommand = ssh -i ~/.ssh/id_rsa_companyb
+```
+
 
