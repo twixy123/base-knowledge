@@ -56,6 +56,12 @@ COPY yarn.lock .
 
 `docker build -t image_name:tag .`
 
+Что бы собрать image для amd/linux после build нужно прописать команду
+
+`--platform linux/amd64`
+
+`docker build --platform linux/amd64 -t image_name:tag .`
+
 После создания можно посмотреть список образов
 
 `docker image ls`
