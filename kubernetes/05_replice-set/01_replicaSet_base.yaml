@@ -1,0 +1,23 @@
+apiVersion: apps/v1 # версия кубера по которой он будет грузить конфиг
+kind: ReplicaSet # Сущность которую мы хотим пульнуть в кубер
+metadata: # Вся общая инфа по этой сущности
+  name: 01-replica-set--base # название сущности
+  labels:
+    app: label-for-replica-set
+spec: # что в этой сущности будет находится
+  replicas: 3 # количество шаблонов (template) которое должно быть в ReplicaSet
+  selector: # Настройки по каким данным ReplicaSet будет определять поды
+    matchLabels: # Область меток, определяющая какие шаблоны подов будут приаттачены к ReplicaSet
+      app-first-label--env: dev # метка в стиле ключ: значение
+  template: # Шаблон пода за котороым будет следить ReplicaSet
+    metadata: # Вся общая инфа по этой сущности из шаблона
+      name: kuber-pod-for--01-replica-set--base # название пода
+      labels: # метки которые будут приаттачены к этому поду
+        app: 01-replica-set--base # метка в стиле ключ: значение
+        app-first-label--env: dev # метка в стиле ключ: значение
+    spec: # что в этой сущности будет находится
+      containers: # перечисляем контейнеры
+      - name: koa-server--pod-container-for--01-replica-set--base # название контейнера который будет крутиться в поде
+        image:  luckytwixy/koa-serve-image:0.1 # образ, из которого будет создаваться контейнер
+        ports: # порты контейнера
+        - containerPort: 3000 # порт на котором сидит наше приложение.

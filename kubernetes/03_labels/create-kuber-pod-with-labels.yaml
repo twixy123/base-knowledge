@@ -1,0 +1,13 @@
+apiVersion: v1 # версия кубера по которой он будет грузить конфиг
+kind: Pod
+metadata:
+  name: app-koa-server-via-yaml-2
+  labels:
+    environment: dev
+    app: koa-server
+spec:
+  containers:
+  - name: container-for-pod-from-create-kuber-pod-lesson
+    image: luckytwixy/koa-serve-image:0.1
+    ports:
+    - containerPort: 3000

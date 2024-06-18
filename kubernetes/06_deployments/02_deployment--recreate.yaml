@@ -1,0 +1,24 @@
+apiVersion: apps/v1 # версия кубера по которой он будет грузить конфиг
+kind: Deployment # Сущность которую мы хотим пульнуть в кубер
+metadata: # Вся общая инфа по этой сущности
+  name: deployment-kuber-app # название сущности
+  labels: # метки которые будут приаттачены к этому Deployment
+    first-deployment-label: label-for-deployment # метка в стиле ключ: значение
+spec: # что в этой сущности будет находится
+  replicas: 5 # количество шаблонов (template) которое должно быть в ReplicaSet ( пишу ReplicaSet, потому-что именно ReplicaSet будет следить за подами )
+  minReadySeconds: 10 # Количество секунд через которое под будет считаться доступным к использованию
+  strategy: # Стратегия по которой будет происходить обновление Deployment
+    type: Recreate # Стратегия по которой обновление будет удалением всех подов, потом созданием новых
+  selector: # Настройки по каким данным ReplicaSet будет определять поды
+    matchLabels: # Область меток, определяющая какие шаблоны подов будут приаттачены к ReplicaSet
+      first-label-for-pod-watcher: label-name-of-pod # метка в стиле ключ: значение
+  template: # Шаблон пода за котороым будет следить ReplicaSet
+    metadata: # Вся общая инфа по этой сущности из шаблона
+      labels: # метки которые будут приаттачены к этому поду
+        first-label-for-pod-watcher: label-name-of-pod # метка в стиле ключ: значение
+    spec: # что в этой сущности будет находится
+      containers: # перечисляем контейнеры
+      - name: pod-container-for-deployment-lesson # название контейнера который будет крутиться в поде
+        image: luckytwixy/koa-serve-image:0.2 # образ, из которого будет создаваться контейнер
+        ports: # порты контейнера
+        - containerPort: 3000 # порт на котором сидит наше приложение.

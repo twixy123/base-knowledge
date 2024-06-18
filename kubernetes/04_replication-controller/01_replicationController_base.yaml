@@ -1,0 +1,21 @@
+apiVersion: v1 # версия кубера по которой он будет грузить конфиг
+kind: ReplicationController # Сущность которую мы хотим пульнуть в кубер
+metadata: # Вся общая инфа по этой сущности
+  name: 01-replication-controller--base # название сущности
+spec: # что в этой сущности будет находится
+  replicas: 3 # количество шаблонов (template) которое должно быть в ReplicationController
+  selector: # Область меток, определяющая какие шаблоны будут приаттачены к ReplicationController
+    app-second-label-from-lesson: koa-server # метка в стиле ключ: значение
+  template:  # Шаблон пода за котороым будет следить ReplicationController
+    metadata: # Вся общая инфа по этой сущности из шаблона
+      name: kuber-pod-for--01-replication-controller--base # название пода
+      labels: # метки которые будут приаттачены к этому поду
+        app: 01-replication-controller--base # метка в стиле ключ: значение
+        app-from-lesson: kuber # метка в стиле ключ: значение
+        app-second-label-from-lesson: koa-server
+    spec: # что в этой сущности будет находится
+      containers: # перечисляем контейнеры
+      - name: koa-server--pod-container-for--01-replication-controller--base # название контейнера который будет крутиться в поде
+        image:  luckytwixy/koa-serve-image:0.1 # образ, из которого будет создаваться контейнер
+        ports: # порты контейнера
+        - containerPort: 3000 # порт на котором сидит наше приложение.
