@@ -114,4 +114,95 @@ email = js@companyb.com
 sshCommand = ssh -i ~/.ssh/id_rsa_companyb
 ```
 
+## Отдельные команды git
+
+### Посмотреть изменения в отдельном коммите
+
+#### Посмотреть метаданные в отдельном коммите
+
+Команда:
+
+`git show commit_hash`
+
+Пример:
+
+`git show 750b0326`
+
+Пример ответа:
+
+```
+commit 750b03... (HEAD -> dev, origin/dev, origin/HEAD)
+Merge: commit_hash commit_hash
+Author: Имя автора
+Date: Дата создания коммита
+
+    Что произощло в этом коммите
+    
+    Сообщение вашего коммита
+```
+
+#### Посмотреть количество измененных строк в файлах в отдельном коммите
+
+Команда:
+
+`git show commit_hash`
+
+Пример:
+
+`git show 750b0326`
+
+Пример ответа:
+
+```
+commit 750b03... (HEAD -> dev, origin/dev, origin/HEAD)
+Merge: commit_hash commit_hash
+Author: Имя автора
+Date: Дата создания коммита
+
+    Что произощло в этом коммите
+    
+    Сообщение вашего коммита
+
+eslint-plugin-custom-rules/index.js                                                |  3 +++
+eslint-plugin-custom-rules/require-computed-type.js                                | 28 ++++++++++++++++++++++++++++
+2 files changed, 31 insertions(+), 0 deletions(-)
+```
+
+> Что бы не отображать метаданные нужно установить флаг --pretty в значение пустой строки
+`git show --stat --pretty="" 750b0326`
+
+#### Посмотреть изменения в конкретном файле в отдельном коммите
+
+Команда:
+
+`git diff commit_hash^! -- file_path`
+
+Пример:
+
+`git diff 750b0326^! -- eslint-plugin-custom-rules/index.js`
+
+Пример ответа:
+
+```
+diff --cc eslint-plugin-custom-rules/index.js
+index 04b2c678,04b2c678..00000000
+deleted file mode 100644,100644
+--- a/eslint-plugin-custom-rules/index.js
++++ /dev/null
+@@@ -1,3 -1,3 +1,0 @@@
+--const requireComputedType = require("./require-computed-type.js");
+--const plugin = { rules: { "require-computed-type": requireComputedType } };
+--module.exports = plugin;
+```
+
+#### Посмотреть историю конкретного файла
+
+Команда:
+
+`git log -p commit_hash -- file_path`
+
+Пример:
+
+`git log -p 750b0326 -- eslint-plugin-custom-rules/index.js`
+
 
