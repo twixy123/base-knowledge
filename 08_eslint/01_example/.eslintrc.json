@@ -1,0 +1,9 @@
+{
+  "extends": [
+    "./node_modules/path-to-share-config/eslintrc.json"
+  ],
+  "plugins": ["custom-rule"],
+  "rules": {
+    "custom-rule/custom-rule": "warn"
+  }
+}

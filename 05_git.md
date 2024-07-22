@@ -206,3 +206,23 @@ deleted file mode 100644,100644
 `git log -p 750b0326 -- eslint-plugin-custom-rules/index.js`
 
 
+### Перемещение коммитов или их файлов
+
+#### Перетащить файлы из определенного коммита в текущий HEAD
+
+Команда:
+
+`git checkout commit_hash -- file_path`
+
+Пример:
+
+`git checkout 750b0326 -- eslint-plugin-custom-rules/index.js`
+
+> Файл появится в вашем HEAD как stage файл ( как будто после git aa ) без нового коммита.
+
+#### Перетащить коммит
+
+Команда:
+
+
+`git cherry-pick `

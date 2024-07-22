@@ -1,0 +1,12 @@
+{
+  "name": "eslint-plugin-custom-rule",
+  "version": "1.0.0",
+  "description": "CUSTOM ESLint Plugin",
+  "main": "index.js",
+  "devDependencies": {
+    "eslint": "8.22.0"
+  },
+  "peerDependencies": {
+    "eslint": ">8.0.0"
+  }
+}
