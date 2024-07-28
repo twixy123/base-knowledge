@@ -1,0 +1,32 @@
+version: '3'
+services:
+  service_name:
+    restart: always
+    image: image_name ( или ссылка на image )
+    container_name: container_name
+    ports:
+      - "8000:80"
+    volumes:
+      - ./path/to/local/folder/or/file:/path/to/folder/or/file/in/docker/container
+    env_file:
+      - ./path/to/env/file/which/will/be/send/to/your/app/container
+    command: ["command", "you", "need", "execute"]
+    depends_on:
+      - container_name_on_which_current_container_depends
+    networks:
+      - network-name
+
+  second_service_name:
+    restart: always
+    build:
+      context: ./path/to/your/local/app/folder
+      dockerfile: Dockerfile
+      args:
+        ARG_NAME: argument_value
+        ARG_2_NAME: ${ENV_VARIABLE} ( переменная которая указана в .env файле )
+    image: image_name_which_will_be_built
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-network

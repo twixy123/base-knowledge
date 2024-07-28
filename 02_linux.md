@@ -74,6 +74,8 @@
 
 - `ip r | grep default`
 - `netstat -r`
+- `curl ifconfig.me`
+- `curl ipinfo.io/ip`
 
 ---
 
@@ -166,6 +168,18 @@ cp path-folder desired-path-folder
 **Скопировать папку**
 ```shell
 cp -r path-folder desired-path-folder
+```
+
+---
+
+**Найти папку**
+```shell
+find ./ -name 'folder-name'
+```
+
+**Найти файл**
+```shell
+find ./ -name 'file-name.js'
 ```
 
 ---

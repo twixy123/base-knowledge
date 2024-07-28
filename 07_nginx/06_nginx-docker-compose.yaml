@@ -1,0 +1,19 @@
+version: '3'
+services:
+  nginx:
+    restart: unless-stopped
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./06_base_nginx_config_for_compose.conf:/etc/nginx/nginx.conf
+      - ./06_index.html:/var/www/html/index.html
+    command: ["nginx", "-g", "daemon off;"]
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-network

@@ -145,11 +145,11 @@ Date: Дата создания коммита
 
 Команда:
 
-`git show commit_hash`
+`git show --stat commit_hash`
 
 Пример:
 
-`git show 750b0326`
+`git show --stat 750b0326`
 
 Пример ответа:
 

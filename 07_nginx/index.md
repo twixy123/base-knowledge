@@ -184,7 +184,7 @@ server {
 
 **my-ubuntu-container** - Это название контейнера
 
-Описание выполнения команды [тут](../04_docker.md#узнать-ip-адрес-контейнера-с-хостовой-машины)
+Описание выполнения команды [тут](../04_docker/index.md#узнать-ip-адрес-контейнера-с-хостовой-машины)
 
 ---
 
@@ -301,5 +301,24 @@ server {
 > То наш сервер будет менять их на `http://localhost:8000/app-1/js/chunk-vendors.js`.
 > А вот уже rewrite снова будет их выпиливать что бы само проксируемое приложение понимало от куда грузить файлы.
 > Т.е. для него это снова будет `http://localhost:8080/js/chunk-vendors.js`
+
+
+### Docker-compose и nginx
+
+[Описание docker-compose](../04_docker/docker-compose.md)
+
+- [Базовый конфиг docker-compose](./06_nginx-docker-compose.yaml)
+- [Базовый конфиг nginx для docker-compose](./06_base_nginx_config_for_compose.conf)
+
+> Во первых дефолтный образ nginx внутри себя в директории для конфигурации `/etc/nginx/conf.d/*.conf`
+имеет файл, который определяет `index.html` по `location /` на порту `80`.
+Нужно в файле конфигурации, который будет передаваться через `volume` в контейнер закоментироваться или
+вообще избавиться от `include /etc/nginx/conf.d/*.conf;`
+
+- [Конфиг с Proxy NGINX docker-compose](./07_proxy_nginx_docker-compose.yaml)
+- [Proxy nginx конфиг для docker-compose](./07_proxy_nginx_config_for_compose.conf)
+
+Желательно что бы vue приложение имело baseUrl, который будет совпадать с названием сервиса,
+который дальше в свою очередь совпадать с роутом настроенным для проксирования в nginx.
 
 

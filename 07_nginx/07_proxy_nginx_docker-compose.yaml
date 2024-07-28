@@ -1,0 +1,32 @@
+version: '3'
+services:
+  nginx:
+    restart: unless-stopped
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./07_proxy_nginx_config_for_compose.conf:/etc/nginx/nginx.conf
+      - ./07_index.html:/var/www/html/index.html
+    depends_on:
+      - app-1
+    command: ["nginx", "-g", "daemon off;"]
+    networks:
+      - app-network
+
+  app-1:
+    container_name: app-1
+    build:
+      context: app-1/
+      dockerfile: Dockerfile
+    image: local/app-1
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-network
