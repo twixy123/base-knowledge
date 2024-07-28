@@ -19,12 +19,29 @@ services:
   second_service_name:
     restart: always
     build:
-      context: ./path/to/your/local/app/folder
+      context: ./01_main_docker_compose_dockerfile
       dockerfile: Dockerfile
       args:
-        ARG_NAME: argument_value
+        ARG_NAME: argument_value_for_image
         ARG_2_NAME: ${ENV_VARIABLE} ( переменная которая указана в .env файле )
     image: image_name_which_will_be_built
+    environment:
+      - VITE_API_URL_BASE_URL_LOOK_IN_VITE_CONFIG=cloned-app-folder
+    healthcheck:
+      test: some_command_from_container_to_check_health
+      interval: 1s
+      timeout: 1s
+      retries: 5
+    command: >
+      /path-to-file-in-container/file.sh
+    depends_on:
+      service_name_which_has_healthcheck:
+        condition: service_healthy
+      optional_second_service_name_with_healthcheck:
+        condition: service_healthy
+
+# Играться с переменными можно разными способами. Например можно создать на уровне docker-compose.yaml файла,
+# файл .env и в нем оставить переменную, которую можно прокинуть и в args и в environments
 
 networks:
   app-network:

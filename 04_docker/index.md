@@ -131,6 +131,12 @@ EXPOSE 80
 
 `docker stop container_name|container_id`
 
+Для того что бы остановит все контейнеры нужно вывести все названия контейнеров, передать в xargs и остановить
+
+[Описание команды](../02_linux.md#остановить-docker-контейнеры)
+
+``
+
 Для того что бы погрузиться внутрь контейнера
 
 `docker attach container_name|container_id`
