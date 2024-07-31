@@ -48,7 +48,9 @@
 
 ---
 
-Если вы вставили в аккаунт git хостинга не дефолтный ключ, а например ключ который лежит в папке ***~/.ssh/decided_service_name/any_file_name_rsa***. Нужно создать файл config в .ssh, без каких либо расширений и в него добавить строки:
+Если вы вставили в аккаунт git хостинга не дефолтный ключ, а например ключ который лежит в папке
+***~/.ssh/decided_service_name/any_file_name_rsa***.
+Нужно создать файл config в .ssh, без каких либо расширений и в него добавить строки:
 
 ```
 # Private Git Host instance
@@ -116,7 +118,7 @@ sshCommand = ssh -i ~/.ssh/id_rsa_companyb
 
 ## Отдельные команды git
 
-### Посмотреть изменения в отдельном коммите
+### Работа в отдельном коммите
 
 #### Посмотреть метаданные в отдельном коммите
 
@@ -205,6 +207,14 @@ deleted file mode 100644,100644
 
 `git log -p 750b0326 -- eslint-plugin-custom-rules/index.js`
 
+#### Вывод всех коммитов, которые ведут к определенному коммиту
+
+`git rev-list commit-hash`
+
+#### Фильтрация коммитов по дате
+
+`git rev-list commit-hash`
+
 
 ### Перемещение коммитов или их файлов
 
@@ -226,3 +236,64 @@ deleted file mode 100644,100644
 
 
 `git cherry-pick `
+
+
+### Работа с ветками
+
+#### Вывод коммитов в указанной ветке
+
+`git rev-list branch-name`
+
+- Ограниченный вывод количества выводимых коммитов
+  - `git rev-list --max-count=10 branch-name`
+- Вывести отфильтрованный список коммитов по дате
+  - `git rev-list --since="2 weeks ago" branch-name`
+  - `git rev-list --until="2024-01-01" branch-name`
+  - `git rev-list --since="2024-07-21" --until="2024-07-23" branch-name`
+- Фильтрация коммитов по автору или коммиттеру
+  - `git rev-list --author="Author Name" branch-name`
+  - `git rev-list --committer="Committer Name" branch-name`
+- Поиск коммитов по сообщению
+  - `git rev-list --grep="fix" branch-name`
+- Вывод коротких хешей коммитов
+    - `git rev-list --abbrev-commit branch-name`
+- Подсчет количества коммитов
+    - `git rev-list --count branch-name`
+
+
+
+
+### Сравнение GIT
+
+#### Вывести изменения при сравнении 2 веток
+
+`git diff main..dev`
+
+#### Вывести только названия файлов при сравнении 2 веток
+
+`git diff --stat main..dev`
+
+#### Вывести коммиты которые при сравнении 2 веток
+
+`git log main..dev`
+
+Выведет все комииты которые есть в `dev` но нет в `main`. Что бы вывести коммиты из main которых нет в dev,
+нужно поменять местами названия веток
+
+`git log dev..main`
+
+> опции для log так же будут работать для этой команды сравнения: `git log --graph --decorate --pretty=raw main..dev`
+
+#### Вывод всех коммитов между двумя ветками или коммитами
+
+`git rev-list main..dev`
+
+> Выведет список хешей коммитов
+
+#### Вывести количество коммитов из одной ветки, отсутствующих в другой
+
+`git rev-list --count main..dev`
+
+
+
+
