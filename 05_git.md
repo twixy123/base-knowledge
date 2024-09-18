@@ -20,11 +20,11 @@
 
 Команда:
 
-`cat path_to_file`
+`cat path_to_file.pub`
 
 Пример:
 
-`cat ~/.ssh/decided_service_name/any_file_name_rsa`
+`cat ~/.ssh/decided_service_name/any_file_name_rsa.pub`
 
 Данные которые отобразились в консоле, нужно скопировать и вставить в нужное поле в настройках аккаунта *github* или *gitlab*
 
@@ -50,7 +50,7 @@
 
 Если вы вставили в аккаунт git хостинга не дефолтный ключ, а например ключ который лежит в папке
 ***~/.ssh/decided_service_name/any_file_name_rsa***.
-Нужно создать файл config в .ssh, без каких либо расширений и в него добавить строки:
+Нужно создать файл config в .ssh, если его еще нет, без каких либо расширений и в него добавить строки:
 
 ```
 # Private Git Host instance
@@ -98,23 +98,25 @@ Host github.custom-host.com
 
 ```
 [user]
-name = John Smith
-email = john.smith@companya.net
+  name = John Smith
+  email = john.smith@companya.net
 
 [core]
-sshCommand = ssh -i ~/.ssh/id_rsa_companya
+  sshCommand = ssh -i ~/.ssh/id_rsa_companya
 ```
 
 **.gitconfig-company_b**
 
 ```
 [user]
-name = John Smith
-email = js@companyb.com
+  name = John Smith
+  email = js@companyb.com
 
 [core]
-sshCommand = ssh -i ~/.ssh/id_rsa_companyb
+  sshCommand = ssh -i ~/.ssh/id_rsa_companyb
 ```
+
+> ! Внимание ! Изменения в гите будут работать только в проектах где есть папка .git
 
 ## Отдельные команды git
 
