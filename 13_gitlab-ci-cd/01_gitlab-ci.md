@@ -22,7 +22,7 @@
 - Берём содержимое приватного ключа из файловой CI/CD переменной (Type: File).
 - Удаляем \r (возвращение каретки в Windows, лишний символ).
 - Добавляем ключ в ssh-agent, чтобы не запрашивался passphrase.
-- *Что делает `echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -`?*
+- *Что делает `cat "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -`?*
   - `cat "$SSH_PRIVATE_KEY"` → выводит SSH-ключ в терминал.
   - `tr -d '\r' → удаляет \r` (Windows-символы, иногда ломают SSH).
   - `ssh-add -` → добавляет ключ в ssh-agent, чтобы не указывать `-i ~/.ssh/id_rsa`.
@@ -48,6 +48,20 @@
   - `"StrictHostKeyChecking no"` → Отключает проверку сервера (иначе CI/CD может зависнуть).
 - Почему это нужно?
   - GitLab CI/CD не может подтвердить fingerprint сервера (как человек), без этой строки пайплайн зависнет на yes/no.
+
+##### Пайплайны от gitlab могут начать ругаться на отсутствие защиты ключа.
+  - Я обошел так:
+    - ```yaml
+      before_script:
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
+        - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+        - ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
+        - cat "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+        - chmod 600 ~/.ssh/id_ed25519
+      ```
+    - Далее в [deploy](#deploy-деплой-на-сервер) я обращаюсь уже не к `-i "$SSH_PRIVATE_KEY"`, а к `-i ~/.ssh/id_ed25519`
+
 
 ```yaml
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
@@ -83,6 +97,7 @@
 ```
 
 - -i "$SSH_PRIVATE_KEY" – указываем SSH-ключ напрямую из файловой CI/CD переменной (перменная имеет тип file).
+  - Учитывать что Gitlab может начать ругаться на секьюрность. Лучше скопировать контент ключа в `~/.ssh/`. Описал [тут](#пайплайны-от-gitlab-могут-начать-ругаться-на-отсутствие-защиты-ключа)
 - -p "$SSH_PORT" – добавляем поддержку кастомного порта (по умолчанию 22).
 - `{Любой способ для запуска контейнера на wps}` - лично у меня поднят docker-compose и есть папка в которой есть Makefile.
   - ```yaml
