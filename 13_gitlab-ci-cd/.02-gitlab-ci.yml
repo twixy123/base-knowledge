@@ -1,0 +1,30 @@
+job-a:
+  stage: build
+  script:
+    - echo "build"
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1h
+
+job-b:
+  stage: test
+  script:
+    - ls dist/
+  dependencies:
+    - job-a
+
+job-c:
+  stage: build
+  script:
+    - echo "build"
+  artifacts:
+    paths:
+      - dist/
+
+job-d:
+  stage: build
+  script:
+    - ls dist/
+  needs:
+    - job-c

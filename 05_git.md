@@ -6,7 +6,7 @@
 
 Команда:
 
-`ssh-keygen -t rsa [-f "path_to_file]"`
+`ssh-keygen -t rsa|ed25519 [-f "path_to_file]"`
 
 Пример:
 

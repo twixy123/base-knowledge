@@ -1,0 +1,45 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  IMAGE_NAME: "{userDockerName}/{docker-image-name}:{tag}"
+
+# before_script (Подготовка перед билдом и деплоем)
+# - Проверяем, установлен ли ssh-agent. Если нет — устанавливаем openssh-client
+# - Запускаем ssh-agent (он управляет приватными ключами для SSH-подключений).
+# - Берём содержимое приватного ключа из файловой CI/CD переменной | Удаляем \r (возвращение каретки в Windows, лишний символ. Windows-символы, иногда ломают SSH) | Добавляем ключ в ssh-agent, чтобы не запрашивался passphrase. → Если приватный ключ имеет passphrase, ssh-agent кеширует его, и GitLab CI/CD не запрашивает пароль при каждом запуске.
+# - Создаём ~/.ssh, если его нет.
+# - Даем ему права 700 (только для владельца).
+# - Отключаем проверку подлинности сервера по ключу. (Без этого CI/CD может остановиться, если сервер ещё не был в known_hosts.) → GitLab CI/CD не может подтвердить fingerprint сервера (как человек), без этой строки пайплайн зависнет на yes/no.
+# - Залогиниваемся в Docker Hub перед docker push.
+before_script:
+  - 'which ssh-agent || (apk update && apk add openssh-client)'
+  - eval $(ssh-agent -s)
+  - cat "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+
+# Запускаем Docker-in-Docker (docker:dind) для создания образа. (без dind GitLab Runner не сможет билдить Docker-образы.)
+# Собираем Docker-образ.
+# Пушим в Docker Hub.
+build:
+  stage: build
+  image: docker:20.10.24
+  services:
+    - docker:dind
+  script:
+    - docker build -t $IMAGE_NAME .
+    - docker push $IMAGE_NAME
+  only:
+    - main
+
+# указываем SSH-ключ напрямую из файловой CI/CD переменной, добавляем поддержку кастомного порта, обновляем контейнер, перезапускаем backend.
+deploy:
+  stage: deploy
+  script:
+    - ssh -i "$SSH_PRIVATE_KEY" -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "{Любой способ для запуска контейнера на wps}"
+  only:
+    - main

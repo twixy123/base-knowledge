@@ -36,6 +36,8 @@
 > Если в ответе нет строки с колонкой `"S"` ( без "+" ) и `"nginx: master process nginx ..."`
   значит nginx не запущен
 
+---
+
 ### Перезапустить nginx
 
 Команда:
@@ -49,11 +51,30 @@
 
 ![Ошибка с портами](./started_error.png)
 
+##### Всегда стоит учитывать что nginx запускается автоматически при запуске сервера
+
+Проврить запущено ли что-то на порту 80:
+
+`sudo lsof -i :80`
+
+Или проверить статус nginx:
+
+`sudo systemctl status nginx`
+
+Если ответ, что-то типа `nginx.service - A high performance web server and a reverse proxy server` - это означает,
+что он автоматически стартует при загрузке системы.
+
+*Остановить, если надо*
+
 ##### Остановаить nginx
 
 Команда:
 
 `nginx -s stop`
+
+ИЛИ:
+
+`sudo systemctl stop nginx`
 
 ##### Убить все процессы nginx
 
@@ -61,6 +82,74 @@
 
 `killall nginx`
 
+##### Можно отключить автозапуск nginx при старте системы
+
+Команда:
+
+`sudo systemctl disable nginx`
+
+##### Что бы он случайно повторно не запустился, можно его заблокировать
+
+Команда:
+
+`sudo systemctl mask nginx`
+
+---
+
+### Для повторного включения nginx нужно выполнить операции в обратном порядке
+
+##### Разблокировать (unmask) сервис
+
+Команда:
+
+`sudo systemctl unmask nginx`
+
+### Включить автозапуск (enable)
+
+Команда:
+
+`sudo systemctl enable nginx`
+
+### Запустить Nginx
+
+Команда:
+
+`sudo systemctl start nginx`
+
+### Проверить статус
+
+Команда:
+
+`sudo systemctl status nginx`
+
+Если ответ будет типа:
+
+> nginx.service - A high performance web server and a reverse proxy server
+> Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+> Active: active (running) since ...
+
+Значит Nginx снова работает как сервис операционной системы и запускается автоматически при старте
+
+---
+
+##### Посмотреть, откуда он запускался и какие файлы конфигурации использует
+
+Команда:
+
+| `nginx -T | less`
+| `sudo cat /etc/nginx/nginx.conf`
+
+##### Посмотреть, какие файлы есть в /etc/nginx/sites-enabled/
+
+Команда:
+
+`ls -la /etc/nginx/sites-enabled/`
+
+##### Удалив конфигурацию, можно отключить все файлы в sites-enabled:
+
+Команда:
+
+`sudo rm -rf /etc/nginx/sites-enabled/*`
 
 ### Работа с портом
 

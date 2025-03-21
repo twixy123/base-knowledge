@@ -386,7 +386,7 @@
 
 Пример:
 
-`psql -u postgres`
+`psql -d postgres`
 
 > **postgres** - дефолтная база данных при установке сервера баз данных postgresql
 
